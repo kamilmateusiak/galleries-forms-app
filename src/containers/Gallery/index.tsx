@@ -26,14 +26,12 @@ class Gallery extends React.Component<any, any> {
 
 	constructor(props: any) {
 		super(props);
-		this.state = {
-			galleriesData: []
-		}
 		this.toastrRef = React.createRef();
 	}
   
-	public handleSubmit = (data: any, event: any, formApi: any) => {
-		firebase.database().ref('gallery/galeria' + Date.now()).set(data)
+	public handleSubmit = (data: {likes: string}, event: any, formApi: any) => {
+		const formData = {...data, likes: Number(data.likes)};
+		firebase.database().ref('gallery/galeria' + Date.now()).set(formData)
 			.then(() => {
 				this.toastrRef.current.success(`Successfully added new gallery`, `Success!`, {
 					hideAnimation: 'animated bounceOutUp',

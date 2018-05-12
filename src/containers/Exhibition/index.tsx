@@ -26,37 +26,14 @@ const FormHeader = styled('header')`
 	text-align: left;
 `;
 
-class Exhibition extends React.Component<any, any> {
-	private firebaseRef: any
-	private firebaseCallback: any
+class Exhibition extends React.Component<{galleries: any}, any> {
 	private toastrRef: any
 
 	constructor(props: any) {
 		super(props);
-		this.state = {
-			galleriesData: []
-		}
 		this.toastrRef = React.createRef();
 	}
 
-	public componentDidMount() {
-		// this.props.actions.getDataRequested();
-		this.firebaseRef = firebase.database().ref('/gallery');
-		this.firebaseCallback = this.firebaseRef.on('value', (snap: any) => {
-			const data = snap.val();
-			
-			const newGalleriesData:Array<{}> = [];
-			Object.keys(data).forEach(galleryKey => {
-				newGalleriesData.push({label: data[galleryKey].galleryName, value: galleryKey}) 
-			})      
-      this.setState({ galleriesData: newGalleriesData });
-    });
-	}
-
-	public componentWillUnmount() {
-    this.firebaseRef.off('value', this.firebaseCallback);
-  }
-  
 	public handleSubmit = (data: any, event: any, formApi: any) => {
 		firebase.database().ref('exhibition/exhibition' + Date.now()).set(data)
 			.then(() => {
@@ -106,7 +83,7 @@ class Exhibition extends React.Component<any, any> {
 								<Text required={true}  field="type" id="exhibition-type" />
 							</FieldWrapper>
 							<FieldWrapper id='exhibition-gallery' text='Gallery'>
-								<Select required={true} field="galleryID" options={this.state.galleriesData} id="exhibition-gallery" />
+								<Select required={true} field="galleryID" options={this.props.galleries} id="exhibition-gallery" />
 							</FieldWrapper>
 							<Button buttonType="submit">
 								Submit
